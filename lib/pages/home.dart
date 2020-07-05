@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:hackation/pages/right.dart';
 import 'package:hackation/pages/left.dart';
+import 'package:hackation/pages/test.dart';
 import 'package:hackation/pages/center.dart';
 
 class Home extends StatefulWidget {
@@ -41,7 +42,13 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin{
           IconButton(
             icon: Icon(Icons.settings),
             onPressed: (){
-
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (BuildContext context) => MapPage()
+                )
+              );
             },
           ),
 
@@ -52,10 +59,11 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin{
           controller: _tabController,
           children: <Widget>[
             LeftPage(),
-            RightPage(),
+            CenterPage(),
           ],
         ),
       ),
+
       bottomNavigationBar: SafeArea(
           child: TabBar(
             controller: _tabController,

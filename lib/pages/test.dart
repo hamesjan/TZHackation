@@ -1,24 +1,47 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:hackation/pages/home.dart';
+import 'package:hackation/pages/left.dart';
+import 'package:hackation/pages/map_launch.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-class CenterPage extends StatefulWidget {
+class MapPage extends StatefulWidget {
   @override
-  CenterPageState createState() => CenterPageState();
+  MapPageState createState() => MapPageState();
 }
 
-class CenterPageState extends State<CenterPage> {
+class MapPageState extends State<MapPage> {
   Completer<GoogleMapController> _controller = Completer();
 
   @override
   void initState() {
     super.initState();
   }
-
   double zoomVal=5.0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+            icon: Icon(Icons.chevron_left),
+            onPressed: () {
+              Navigator.pop(context);
+              Navigator.push(context,
+                  MaterialPageRoute(
+                      builder: (BuildContext context) => LeftPage()
+                  )
+              );
+            }),
+        title: Text("Torrance"),
+        actions: <Widget>[
+          IconButton(
+              icon: Icon(Icons.search),
+              onPressed: () {
+                //
+              }),
+        ],
+      ),
       body: Stack(
         children: <Widget>[
           buildMap(context),
@@ -27,6 +50,44 @@ class CenterPageState extends State<CenterPage> {
           _buildContainer(),
         ],
       ),
+    );
+  }
+
+  Widget _joinQueue(){
+    return Align(
+        alignment: Alignment.topCenter,
+        child:
+        FlatButton(
+          onPressed: (){
+            Navigator.pop(context);
+            Navigator.push(context,
+                MaterialPageRoute(
+                    builder: (BuildContext context) => Home(index: 1,)
+                )
+            );
+          },
+          child: Container(
+            width: 150,
+            padding: EdgeInsets.all(3),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(25)),
+                color: Colors.deepPurpleAccent
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Icon(Icons.map, color: Colors.white,),
+                SizedBox(
+                  width: 10,
+                ),
+                Text('Go Now!', style: TextStyle(
+                    fontSize: 22,
+                  color: Colors.white
+                ),)
+              ],
+            ),
+          ),
+        )
     );
   }
 
@@ -55,11 +116,11 @@ class CenterPageState extends State<CenterPage> {
 
   Future<void> _minus(double zoomVal) async {
     final GoogleMapController controller = await _controller.future;
-    controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(target: LatLng(33.8358, -118.3406), zoom: zoomVal)));
+    controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(target: LatLng(40.7128, -74.0060), zoom: zoomVal)));
   }
   Future<void> _plus(double zoomVal) async {
     final GoogleMapController controller = await _controller.future;
-    controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(target: LatLng(33.8358, -118.3406), zoom: zoomVal)));
+    controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(target: LatLng(40.7128, -74.0060), zoom: zoomVal)));
   }
 
 
@@ -77,22 +138,22 @@ class CenterPageState extends State<CenterPage> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: _boxes(
-                  "https://www.traderjoes.com/Brandify/images/121-Torrance-Hawthorne-Blvd-storefront.jpg",
-                  33.85226, -118.353,"Trader Joes", "Estimated Wait: 0 minutes"),
+                  "https://images.getbento.com/accounts/57c1ee63ee00def6465f7e122b36ed35/media/images/37681TriGrill_DSC2945.jpg?fit=max&w=1800&auto=format,compress",
+                  40.71961, -74.0099,"Tribeca Grill", "Estimated Wait: 20 minutes"),
             ),
             SizedBox(width: 10.0),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: _boxes(
-                  "https://mobilecontent.costco.com/live/resource/img/static-roadshow/special-events-schedule.jpg",
-                  33.8065, -118.33337, "Costco", "Estimated Wait: 5 minutes"),
+                  "https://i1.wp.com/davidbouley.com/b-at-home/wp-content/uploads/2018/04/Bouley-Events.jpg?fit=640%2C640&ssl=1",
+                  33.8065, -118.33337, "Bouley", "Estimated Wait: 5 minutes"),
             ),
             SizedBox(width: 10.0),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: _boxes(
-                  "https://www.hyperborea.org/journal/wp-content/uploads/2011/12/shop-s-mart.jpg",
-                  33.83722, -118.329367,"S-Mart", "Estimated Wait: 2 minutes"),
+                  "https://i.insider.com/5bfc5425da27f820b87a9eea?width=1100&format=jpeg&auto=webp",
+                  40.71274, -74.01338,"One World Trade Center", "Open Now"),
             ),
           ],
         ),
@@ -240,12 +301,12 @@ class CenterPageState extends State<CenterPage> {
       width: MediaQuery.of(context).size.width,
       child: GoogleMap(
         mapType: MapType.normal,
-        initialCameraPosition:  CameraPosition(target: LatLng(33.8358, -118.3406), zoom: 12),
+        initialCameraPosition:  CameraPosition(target: LatLng(40.7128, -74.0060), zoom: 12),
         onMapCreated: (GoogleMapController controller) {
           _controller.complete(controller);
         },
         markers: {
-          walmart,smart,traderJoes,costco,cvs
+          walmart,smart,traderJoes,costco,cvs, owtc
         },
       ),
     );
@@ -259,27 +320,27 @@ class CenterPageState extends State<CenterPage> {
 }
 
 Marker traderJoes = Marker(
-  markerId: MarkerId('TraderJoes'),
-  position: LatLng(33.85226, -118.353),
-  infoWindow: InfoWindow(title: 'Trader Joes'),
+  markerId: MarkerId('LocandaVerde'),
+  position: LatLng(40.71986, -74.01004),
+  infoWindow: InfoWindow(title: 'Locanda Verde'),
   icon: BitmapDescriptor.defaultMarkerWithHue(
     BitmapDescriptor.hueBlue,
   ),
 );
 
 Marker costco = Marker(
-  markerId: MarkerId('Costco'),
-  position: LatLng(33.8065, -118.33337),
-  infoWindow: InfoWindow(title: 'Costco'),
+  markerId: MarkerId('Bouley'),
+  position: LatLng(40.716957,-74.008896),
+  infoWindow: InfoWindow(title: 'Bouley'),
   icon: BitmapDescriptor.defaultMarkerWithHue(
     BitmapDescriptor.hueBlue,
   ),
 );
 
 Marker cvs = Marker(
-  markerId: MarkerId('CVS'),
-  position: LatLng(33.8393, -118.3627),
-  infoWindow: InfoWindow(title: 'CVS Pharmacy'),
+  markerId: MarkerId('Marc Forgione'),
+  position: LatLng(40.71647, -74.00956),
+  infoWindow: InfoWindow(title: 'Marc Forgione',),
   icon: BitmapDescriptor.defaultMarkerWithHue(
     BitmapDescriptor.hueBlue,
   ),
@@ -288,19 +349,32 @@ Marker cvs = Marker(
 //New York Marker
 
 Marker walmart = Marker(
-  markerId: MarkerId('walmart'),
-  position: LatLng(33.827957, -118.35346),
-  infoWindow: InfoWindow(title: 'Walmart'),
+  markerId: MarkerId("Joe's Shanghai"),
+  position: LatLng(40.71467, -73.99776,),
+  infoWindow: InfoWindow(title: "Joe's Shanghai"),
   icon: BitmapDescriptor.defaultMarkerWithHue(
     BitmapDescriptor.hueBlue,
   ),
 );
 
 Marker smart = Marker(
-  markerId: MarkerId('smart'),
-  position: LatLng(33.83722, -118.329367),
-  infoWindow: InfoWindow(title: 'S-Mart'),
+  markerId: MarkerId('Tribeca Grill'),
+  position: LatLng(40.71961, -74.0099),
+  onTap: (){
+    MapUtils.openMap(40.71961, -74.0099);
+  },
   icon: BitmapDescriptor.defaultMarkerWithHue(
     BitmapDescriptor.hueBlue,
   ),
 );
+
+
+Marker owtc = Marker(
+  markerId: MarkerId('owtc'),
+  position: LatLng(40.71274,-74.01338,),
+  icon: BitmapDescriptor.defaultMarkerWithHue(
+    BitmapDescriptor.hueBlue,
+  ),
+);
+
+
